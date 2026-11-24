@@ -8,12 +8,8 @@ A base documental é o **DOC-01 v02**, Plano do Projeto e Metodologia Analítica
 
 ```mermaid
 flowchart LR
-  F[Fontes públicas] --> R[Arquivos originais e manifesto]
-  R --> P[Pipeline Python]
-  P --> C[Dados integrados]
-  C --> I[Indicadores e corredores]
-  I --> S[Ranking IPF e cenários]
-  S --> D[Parquet e DuckDB]
+  F[Fontes públicas] --> P[Pipeline Python]
+  P --> D[Parquet e DuckDB]
   D --> A[API FastAPI]
   A --> W[Painel com mapa e tabela]
 ```
