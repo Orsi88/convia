@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "convia"
+version = "0.1.0"
+description = "Base analítica do projeto de extensão CONVIA"
+requires-python = ">=3.12"
+dependencies = ["fastapi==0.121.3", "uvicorn==0.54.0"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
