@@ -16,7 +16,7 @@ Abra `http://127.0.0.1:8000/` para usar o painel web e `http://127.0.0.1:8000/do
 
 O mapa de acidentes usa Leaflet e o mapa-base do OpenStreetMap. O navegador precisa de internet para carregar o mapa e os arquivos do Leaflet. Os registros da PRF são lidos pela API local.
 
-A triagem consulta qualquer par de municípios de Goiás por código IBGE e traça a rota rodoviária entre suas sedes com OSRM. O painel conta registros da PRF em Goiás em uma faixa aproximada de 500 m ao redor da rota.
+A triagem consulta pares com partida em Goiás e destino em qualquer município do Brasil, por código IBGE, e traça a rota rodoviária entre as sedes com OSRM. O painel conta os registros da PRF em uma faixa aproximada de 500 m ao redor da rota, em todos os estados que ela atravessa.
 
 Para atualizar os indicadores de carga, baixe a [matriz de cargas do PNL 2050](https://pit.infrasa.gov.br/dados-abertos/), extraia o arquivo RDS, instale o extra de preparo (`pip install -e .[prep]`) e execute `python scripts/prepare_pnl.py matrizes_empilhadas.rds data/raw/ibge/localidades.gpkg`. O script mantém os fluxos com origem em Goiás e destino em qualquer município, agrega a coluna `toneladas` da base de 2023 por par direcionado, identifica o macroproduto com maior tonelagem e grava os 40 pares de maior carga com 300 km ou mais pela estrada (distância do OSRM/OpenStreetMap). Também gera a lista de municípios do Brasil usada no painel. O PIB nacional vem de `python -m convia.collect ibge --year 2023 --state BR`.
 
@@ -31,7 +31,7 @@ As exportações de Goiás vão para `data/processed/pnl-go-export-2023.csv`. A 
 A soma junta os pares com origem a até 100 km dos terminais de Anápolis, Rio Verde e São Simão e chegada a até 100 km de Estrela d'Oeste, Santos, Porto Nacional ou São Luís. O Comex Stat estima a parte das exportações que sai por Santos e pelo Itaqui. Sem ele, as exportações ficam fora da soma e o painel mostra quanto falta. `GET /api/corridors/norte-sul` entrega o resultado.
 
 - `GET /api/meta` expõe a versão do recorte e a data de atualização. A versão do modelo permanece `null` até a implementação do modelo analítico.
-- `GET /api/sources` lista os nomes e links das fontes previstas no DOC-02.
+- `GET /api/sources` lista as fontes usadas pelo painel, com o ano de referência e o uso de cada uma.
 
 `src/convia/` contém o pacote Python. A pasta local `data/` é destinada às bases de trabalho e fica fora do Git.
 
@@ -46,11 +46,11 @@ Na raiz do repositório, com o ambiente instalado:
 .\.venv\Scripts\python.exe -m convia.collect ibge --year 2023 --municipality 3106200
 ```
 
-PRF e ANTT usam os arquivos de 2025. O DNIT usa a planilha de contagem de tráfego de 2022. O exemplo do IBGE consulta o PIB de Belo Horizonte em 2023. Esses períodos verificam a coleta e o período comum do piloto ainda precisa ser definido.
+PRF e ANTT usam os arquivos de 2025. O DNIT usa a planilha de contagem de tráfego de 2022. O exemplo do IBGE consulta o PIB de Belo Horizonte em 2023. Cada base mantém o próprio ano. O período comum ainda precisa ser definido, e a aba Fontes mostra o ano de cada uma.
 
 Cada coleta validada grava o original e seu `manifest.json` em uma nova pasta de `data/raw/<fonte>/`. O manifesto registra URL, data de coleta, ano de referência e SHA-256. Para consultar vários municípios, repita `--municipality`.
 
-## Preparar o piloto de Goiás
+## Preparar a base de Goiás
 
 Após coletar PRF, ANTT e DNIT, colete o PIB dos municípios de Goiás e prepare o recorte:
 
@@ -61,7 +61,7 @@ Após coletar PRF, ANTT e DNIT, colete o PIB dos municípios de Goiás e prepare
 
 O processamento confere o SHA-256 dos insumos e gera quatro arquivos Parquet em uma nova pasta `data/processed/goias-<data>/`, com manifesto de origem, contagens e pendências de qualidade. Uma falha preserva as versões anteriores.
 
-O recorte inclui acidentes e trechos rodoviários em Goiás, fluxos ferroviários com origem ou destino no estado e PIB dos municípios goianos. Os anos permanecem identificados por fonte. O período comum, a associação espacial entre bases e a conversão de TU/TKU da ANTT ainda precisam ser fechados.
+O recorte inclui os acidentes da PRF de todo o Brasil, porque as rotas atravessam outros estados. Inclui também os trechos rodoviários do DNIT em Goiás, os fluxos ferroviários com origem ou destino no estado e o PIB dos municípios. Os anos permanecem identificados por fonte. O período comum, a associação espacial entre bases e a conversão de TU/TKU da ANTT ainda precisam ser fechados.
 
 ## Consultar o recorte pela API
 

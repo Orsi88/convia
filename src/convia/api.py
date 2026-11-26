@@ -304,37 +304,36 @@ def map_data(
 
 @app.get("/api/sources")
 def sources() -> list[dict[str, str]]:
+    """Fontes realmente usadas pelo painel, com o ano de referência e o uso de cada uma."""
     return [
-        {
-            "name": "PRF — BAT — Acidentes de Trânsito",
-            "url": "https://www.gov.br/prf/pt-br/acesso-a-informacao/dados-abertos/dados-abertos-da-prf",
-        },
-        {
-            "name": "DNIT — PNCT — Contagem de Tráfego",
-            "url": "https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/planejamento/contagem-de-trafego/pnct",
-        },
-        {
-            "name": "DNIT — Estatísticas PNCT",
-            "url": "https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/planejamento/contagem-de-trafego/estatisticas",
-        },
-        {
-            "name": "ANTT — SIADE — Produção Origem-Destino",
-            "url": "https://dados.antt.gov.br/dataset/sistema-de-acompanhamento-do-desempenho-operacional-das-concessionarias-siade",
-        },
-        {
-            "name": "IBGE — PIB dos Municípios",
-            "url": "https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9088-produto-interno-bruto-dos-municipios.html",
-        },
-        {
-            "name": "IBGE/SIDRA — Produção e população",
-            "url": "https://sidra.ibge.gov.br/",
-        },
-        {
-            "name": "ANTAQ — Dados Abertos / Estatístico Aquaviário",
-            "url": "https://www.gov.br/antaq/pt-br/acesso-a-informacao/dados-abertos",
-        },
-        {
-            "name": "Infra S.A./ONTL — Observatório de Transporte e Logística",
-            "url": "https://ontl.infrasa.gov.br/",
-        },
+        {"name": "PRF — Acidentes de trânsito em rodovias federais", "year": "2025", "use": "Acidentes e mortes perto da rota",
+         "url": "https://www.gov.br/prf/pt-br/acesso-a-informacao/dados-abertos/dados-abertos-da-prf"},
+        {"name": "DNIT — VMDa do PNCT por trecho do SNV", "year": "2022", "use": "Tráfego de veículos comerciais por BR e UF",
+         "url": "https://www.gov.br/dnit/pt-br/assuntos/planejamento-e-pesquisa/planejamento/contagem-de-trafego/pnct"},
+        {"name": "ANTT — SIADE, produção ferroviária origem-destino", "year": "2025", "use": "Fluxos ferroviários existentes",
+         "url": "https://dados.antt.gov.br/dataset/sistema-de-acompanhamento-do-desempenho-operacional-das-concessionarias-siade"},
+        {"name": "ANTT — Relatório de Tarifas e Preços", "year": "2024", "use": "Custo do frete ferroviário",
+         "url": "https://www.gov.br/antt/pt-br/assuntos/ferrovias/relatorio-de-tarifas-e-precos/relatorio-de-tarifas-e-precos"},
+        {"name": "Infra S.A. — Matriz de cargas do PNL 2050", "year": "2023 (base)", "use": "Carga entre municípios e exportações",
+         "url": "https://pit.infrasa.gov.br/dados-abertos/"},
+        {"name": "Comex Stat (MDIC) — exportações por porto", "year": "2023", "use": "Porto de saída das exportações (coleta pendente)",
+         "url": "https://comexstat.mdic.gov.br/"},
+        {"name": "Conab — Boletim logístico", "year": "ago/2026", "use": "Frete rodoviário de grãos",
+         "url": "https://www.gov.br/conab/pt-br/atuacao/logistica/boletim-logistico"},
+        {"name": "Ipea/PRF — Acidentes de trânsito nas rodovias federais", "year": "2014 (corrigido pelo IPCA)", "use": "Custo dos acidentes e fração com caminhão",
+         "url": "https://www.icict.fiocruz.br/sites/www.icict.fiocruz.br/files/IPEA%202015_relatorio_acidentes_transito.pdf"},
+        {"name": "BNDES — Descarbonização no transporte de cargas", "year": "2025", "use": "CO₂ e diesel por t·km",
+         "url": "https://web.bndes.gov.br/bib/jspui/bitstream/1408/27428/1/PRCapLiv_216305_Descarboniza%c3%a7%c3%a3o%20no%20transporte%20de%20cargas.pdf"},
+        {"name": "IBGE — PIB dos Municípios", "year": "2023", "use": "Atividade econômica das cidades",
+         "url": "https://www.ibge.gov.br/estatisticas/economicas/contas-nacionais/9088-produto-interno-bruto-dos-municipios.html"},
+        {"name": "IBGE — CEMPRE, pessoal ocupado e unidades locais", "year": "2024", "use": "Empregos por setor no entorno",
+         "url": "https://www.ibge.gov.br/estatisticas/economicas/comercio/9016-estatisticas-do-cadastro-central-de-empresas.html"},
+        {"name": "IBGE — Localidades (sedes municipais)", "year": "2022", "use": "Coordenadas dos municípios",
+         "url": "https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/27385-localidades.html"},
+        {"name": "Ministério do Turismo — Categorização do Mapa do Turismo", "year": "2017", "use": "Categoria turística dos municípios",
+         "url": "https://dados.turismo.gov.br/"},
+        {"name": "OSRM/FOSSGIS sobre OpenStreetMap", "year": "consulta atual", "use": "Rota e distância rodoviária",
+         "url": "https://routing.openstreetmap.de/about.html"},
+        {"name": "GDELT e Wikipedia/Wikidata", "year": "consulta atual", "use": "Notícias recentes, resumos e imagens",
+         "url": "https://www.gdeltproject.org/"},
     ]

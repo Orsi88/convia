@@ -5,9 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CONVIA | Goiás → Brasil</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
-  <link rel="stylesheet" href="/assets/dashboard.css?v=corredor-2">
+  <link rel="stylesheet" href="/assets/dashboard.css?v=revisao-1">
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous" defer></script>
-  <script src="/assets/dashboard.js?v=corredor-2" type="module"></script>
+  <script src="/assets/dashboard.js?v=revisao-1" type="module"></script>
 </head>
 <body>
   <header class="masthead">
@@ -25,12 +25,12 @@
   </header>
   <main class="wrap">
     <aside class="project-notice" aria-label="Limites do projeto">
-      <strong>Projeto acadêmico de extensão · Goiás</strong>
+      <strong>Projeto acadêmico de extensão · cargas com origem em Goiás</strong>
       <span>As simulações usam dados públicos e hipóteses. Servem para explorar cenários e exigem estudos adicionais para avaliar a viabilidade de uma ferrovia ou prever seus efeitos.</span>
     </aside>
     <section class="panel" id="ferrovias" aria-labelledby="rail-heading">
       <div class="route-toolbar">
-        <div class="route-title"><h2 id="rail-heading">Explorar trajetos a partir de Goiás</h2><p id="triage-sources">Acidentes da PRF e PIB municipal do IBGE</p></div>
+        <div class="route-title"><h2 id="rail-heading">Explorar trajetos a partir de Goiás</h2><p id="triage-sources">PRF · IBGE · Infra S.A. · PNL 2050 · OSRM/OpenStreetMap</p></div>
       <div class="route-picker" role="group" aria-label="Municípios do trajeto">
         <label class="route-start" for="triage-start">Ponto de partida <select id="triage-start" disabled></select></label>
         <label class="route-end" for="triage-end">Ponto de destino <select id="triage-end" disabled></select></label>
@@ -164,7 +164,8 @@
         </label>
       </div>
       <section class="route-context" id="safety-route" aria-live="polite"><p class="panel-note">Escolha um trajeto em "Explorar trajetos" para ver a segurança ao longo do caminho.</p></section>
-      <h3 class="overview-heading">Goiás · visão geral</h3>
+      <h3 class="overview-heading">Goiás, estado de origem · visão geral</h3>
+      <p class="panel-note">O trajeto escolhido aparece acima, com todos os estados por onde passa. Esta visão geral mostra só Goiás.</p>
       <p id="safety-status" class="status" role="status"></p>
       <div id="safety-content" hidden>
         <dl class="metrics safety-metrics" id="safety-metrics"></dl>
@@ -195,7 +196,8 @@
     <section class="panel" id="rodovias" aria-labelledby="roads-heading" hidden>
       <div class="panel-header"><div><h2 id="roads-heading">Trechos rodoviários</h2><p id="roads-source">Fonte DNIT</p></div></div>
       <section class="route-context" id="roads-route" aria-live="polite"><p class="panel-note">Escolha um trajeto em "Explorar trajetos" para ver as rodovias do caminho.</p></section>
-      <h3 class="overview-heading">Goiás · visão geral</h3>
+      <h3 class="overview-heading">Goiás, estado de origem · visão geral</h3>
+      <p class="panel-note">O trajeto escolhido aparece acima, com todos os estados por onde passa. Esta visão geral mostra só Goiás.</p>
       <p id="roads-status" class="status" role="status"></p>
       <div class="insight-grid">
         <section class="context-panel">
@@ -219,7 +221,8 @@
     <section class="panel" id="economia" aria-labelledby="economy-heading" hidden>
       <div class="panel-header"><div><h2 id="economy-heading">PIB municipal</h2><p id="economy-source">Fonte IBGE</p></div></div>
       <section class="route-context" id="economy-route" aria-live="polite"><p class="panel-note">Escolha um trajeto em "Explorar trajetos" para ver a economia, o turismo e a cultura ao longo do caminho.</p></section>
-      <h3 class="overview-heading">Goiás · visão geral</h3>
+      <h3 class="overview-heading">Goiás, estado de origem · visão geral</h3>
+      <p class="panel-note">O trajeto escolhido aparece acima, com todos os estados por onde passa. Esta visão geral mostra só Goiás.</p>
       <p id="economy-status" class="status" role="status"></p>
       <div class="regional-layout">
         <section class="context-panel">
@@ -267,7 +270,14 @@
       <p id="coverage" class="coverage" role="status">Carregando cobertura das bases…</p>
       <p id="sources-status" class="status" role="status"></p>
       <ul id="quality-notes"></ul>
-      <ul id="source-links"></ul>
+      <h3>Fontes usadas e ano de referência</h3>
+      <p class="panel-note">Cada base tem um ano diferente: os cruzamentos comparam ordens de grandeza, não um mesmo período.</p>
+      <div class="table-scroll" role="region" aria-label="Fontes usadas" tabindex="0">
+        <table>
+          <thead><tr><th scope="col">Fonte</th><th scope="col">Ano</th><th scope="col">Uso no painel</th></tr></thead>
+          <tbody id="source-links"></tbody>
+        </table>
+      </div>
     </section>
   </main>
 </body>

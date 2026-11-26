@@ -14,7 +14,7 @@ function element(tag, text) {
 async function get(url) {
   const response = await fetch(url);
   if (!response.ok) throw new Error(response.status === 503
-    ? 'O recorte de Goiás ainda está indisponível.' : 'Não foi possível carregar os dados.');
+    ? 'Os dados preparados ainda estão indisponíveis.' : 'Não foi possível carregar os dados.');
   return response.json();
 }
 
@@ -1089,12 +1089,14 @@ async function loadSources() {
     const [quality, sources] = await Promise.all([get('/api/quality'), get('/api/sources')]);
     byId('version').textContent = `Versão da base: ${quality.database_version}`;
     byId('quality-notes').replaceChildren(...quality.quality.notes.map((note) => element('li', note)));
-    byId('source-links').replaceChildren(...sources.map(({ name, url }) => {
-      const item = element('li');
+    byId('source-links').replaceChildren(...sources.map(({ name, url, year, use }) => {
+      const row = element('tr');
+      const cell = element('td');
       const link = element('a', name);
       link.href = url;
-      item.append(link);
-      return item;
+      cell.append(link);
+      row.append(cell, element('td', year), element('td', use));
+      return row;
     }));
     status.textContent = '';
   } catch (error) {
