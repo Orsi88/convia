@@ -223,3 +223,4 @@ li + li { margin-top: .4rem; }
 .world-photo figcaption { font-size: .75rem; color: var(--muted); margin-top: .25rem; }
 .impact-headline { font-size: 1.05rem; font-weight: 600; color: var(--green); margin: .5rem 0 .75rem; }
 .impact-headline:empty { display: none; }
+.world-highlights li::marker { color: var(--green); }

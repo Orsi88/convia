@@ -1050,33 +1050,49 @@ async function loadWorld() {
         figures.append(row);
       }
       card.append(figures);
+      const highlights = element('ul');
+      highlights.className = 'world-highlights';
+      highlights.append(...(railway.destaques ?? []).map((highlight) => {
+        const item = element('li', highlight.texto);
+        item.append(cite(highlight.fontes));
+        return item;
+      }));
+      if (highlights.children.length) card.append(element('h4', 'O que funcionou'), highlights);
+      // Categorias sem efeito documentado ficam fora do card; a falta aparece nas lacunas da pesquisa.
       for (const [key, label] of EFEITOS) {
         const effects = railway.efeitos[key] ?? [];
+        if (!effects.length) continue;
         const list = element('ul');
-        list.append(...(effects.length ? effects.map((effect) => {
+        list.append(...effects.map((effect) => {
           const item = element('li', effect.texto);
           const tag = element('em', ` ${CONFIANCA[effect.confianca] ?? effect.confianca}`);
           item.append(cite(effect.fontes), tag);
           return item;
-        }) : [element('li', 'Sem efeito documentado nas fontes lidas.')]));
+        }));
         card.append(element('h4', label), list);
       }
       const warnings = element('ul');
-      warnings.append(...railway.atencao.map((text) => element('li', text)), ...railway.lacunas.map((text) => element('li', 'Lacuna: ' + text)));
-      card.append(element('h4', 'Pontos de atenção'), warnings);
+      warnings.append(...railway.atencao.map((text) => element('li', text)));
+      const gaps = element('p', 'Lacunas da pesquisa: ' + railway.lacunas.join(' '));
+      gaps.className = 'panel-note';
+      card.append(element('h4', 'Desafios'), warnings, gaps);
       return card;
     });
-    const lessons = element('ol');
-    lessons.append(...data.licoes.map((lesson) => {
-      const item = element('li', lesson.texto);
-      item.append(cite(lesson.fontes));
-      return item;
-    }));
+    const lessons = (tipo) => {
+      const list = element('ul');
+      list.append(...data.licoes.filter((lesson) => lesson.tipo === tipo).map((lesson) => {
+        const item = element('li', lesson.texto);
+        item.append(cite(lesson.fontes));
+        return item;
+      }));
+      return list;
+    };
     const legend = element('p', 'Confiança: Estabelecida = documento oficial ou várias fontes independentes; Apoiada = fonte boa, ainda única; Fraca = fonte secundária, parte interessada ou sem números. Passe o mouse sobre o código da fonte para ver o documento.');
     legend.className = 'panel-note';
     byId('world-content').replaceChildren(
       element('p', data.nota),
-      block('O que esses casos ensinam para o CONVIA', lessons),
+      block('O que esses casos ensinam para o CONVIA', element('h4', 'O que funcionou'), lessons('resultado'),
+        element('h4', 'Cuidados para o projeto'), lessons('cuidado')),
       legend,
       ...cards,
     );
