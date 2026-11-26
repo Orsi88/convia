@@ -41,10 +41,10 @@ function metrics(target, items) {
 }
 
 const datasets = [
-  ['Acidentes', 'accidents', 'prf', 'safety'],
-  ['Trechos rodoviários', 'roads', 'dnit', 'roads'],
-  ['Fluxos ferroviários', 'rail_flows', 'antt', 'rail'],
-  ['PIB municipal', 'economy', 'ibge', 'economy'],
+  ['Acidentes (registros)', 'accidents', 'prf', 'safety'],
+  ['Trechos rodoviários (trechos do SNV em GO)', 'roads', 'dnit', 'roads'],
+  ['Fluxos ferroviários (registros mensais)', 'rail_flows', 'antt', 'rail'],
+  ['PIB municipal (municípios com dado)', 'economy', 'ibge', 'economy'],
 ];
 
 async function loadOverview() {
@@ -225,8 +225,8 @@ async function loadSafety() {
       for (const br of roads) filter.add(new Option(br === '000' ? 'Código 000 na PRF' : `BR-${br}`, br));
       filter.disabled = !roads.length;
     }
-    metrics(byId('safety-metrics'), [['Acidentes', summary.accidents], ['Mortos', summary.deaths], ['Feridos', summary.injured]]);
-    showBars('safety-bars', mostFrequent(points.map(({ properties }) => properties.tipo_acidente)));
+    metrics(byId('safety-metrics'), [['Acidentes em GO (registros)', summary.accidents, 'PRF · ' + summary.reference_year], ['Mortos em GO (pessoas)', summary.deaths, 'PRF · ' + summary.reference_year], ['Feridos em GO (pessoas)', summary.injured, 'PRF · ' + summary.reference_year]]);
+    showBars('safety-bars', mostFrequent(points.map(({ properties }) => properties.tipo_acidente)), 'acidentes');
     paginatedTable(byId('accident-table'), 'Acidentes da PRF', [
       ['Data', 'data_inversa'], ['Município', 'municipio'], ['BR', 'br'], ['Km', 'km'], ['Tipo', 'tipo_acidente'],
       ['Mortos', 'mortos'], ['Feridos', 'feridos'],
@@ -282,12 +282,12 @@ const whole = (value) => Number.isFinite(value) ? format(Math.round(value)) : '�
 const range = (show) => (value) => value ? show(value.min) + ' a ' + show(value.max) : '—';
 const INDICADORES = [
   ['Carga no trem (t)', 'carga', whole],
-  ['Viagens de caminhão evitadas', 'viagens', whole],
+  ['Viagens de caminhão evitadas (viagens carregadas)', 'viagens', whole],
   ['Caminhões a menos por dia na rodovia (ida e volta)', 'passagensDia', decimal(1)],
-  ['Acidentes evitados', 'acidentes', decimal(2)],
-  ['Mortes evitadas', 'mortes', decimal(3)],
-  ['Custo de acidentes evitado', 'custo', money],
-  ['Economia de frete (faixa)', 'economia', range(money)],
+  ['Acidentes evitados (acidentes)', 'acidentes', decimal(2)],
+  ['Mortes evitadas (pessoas)', 'mortes', decimal(3)],
+  ['Custo de acidentes evitado (R$)', 'custo', money],
+  ['Economia de frete (R$, faixa)', 'economia', range(money)],
   ['CO₂ evitado (t)', 'co2', whole],
   ['Diesel economizado (mil L)', 'diesel', (value) => whole(value / 1000)],
 ];
@@ -334,9 +334,9 @@ function showImpact(pair) {
 // ---- Corredor da Norte-Sul ----------------------------------------------------------------------
 const CORREDOR = [
   ['Carga no trem (t)', 'carga', whole],
-  ['Viagens de caminhão evitadas', 'viagens', whole],
+  ['Viagens de caminhão evitadas (viagens carregadas)', 'viagens', whole],
   ['Caminhões a menos por dia nas rodovias (ida e volta)', 'passagensDia', whole],
-  ['Economia de frete (faixa)', 'economia', range(money)],
+  ['Economia de frete (R$, faixa)', 'economia', range(money)],
   ['CO₂ evitado (t)', 'co2', whole],
   ['Diesel economizado (mil L)', 'diesel', (value) => whole(value / 1000)],
 ];
@@ -568,11 +568,11 @@ async function loadCorridor(route, start, end, towns, context) {
   const sum = (pick) => values.reduce((total, item) => total + (pick(item) ?? 0), 0);
   const workers = (section) => (item) => item.activities.find((row) => row.section === section)?.workers;
   metrics(byId('corridor-metrics'), [
-    ['Municípios no entorno', entries.length, 'Sede a até ' + CORRIDOR_KM + ' km da rota'],
+    ['Municípios no entorno (municípios)', entries.length, 'Sede a até ' + CORRIDOR_KM + ' km da rota'],
     ['PIB somado (R$ milhões)', Math.round(sum((item) => item.value) / 1000), sources.economy],
-    ['Pessoas ocupadas', sum(workers('Total')), sources.activities],
-    ['Em alojamento e alimentação', sum(workers('I')), sources.activities],
-    ['No Mapa do Turismo', values.filter((item) => item.tourism).length, sources.tourism],
+    ['Pessoas ocupadas no entorno (pessoas)', sum(workers('Total')), sources.activities],
+    ['Ocupadas em alojamento e alimentação (pessoas)', sum(workers('I')), sources.activities],
+    ['No Mapa do Turismo (municípios)', values.filter((item) => item.tourism).length, sources.tourism],
   ]);
   byId('corridor-rows').replaceChildren(...entries.map((entry) => {
     const code = String(entry.town.id);
@@ -605,7 +605,11 @@ async function loadCorridor(route, start, end, towns, context) {
 // ---- Abas por trajeto ---------------------------------------------------------------------------
 let trajeto = null;
 
-function bars(rows) {
+// Número com unidade; no singular, 'acidentes' vira 'acidente' (R$ mi e R$ bi ficam como estão).
+const withUnit = (value, unit) => format(value) + ' ' + (value === 1 && !unit.startsWith('R$') ? unit.replace(/s$/, '') : unit);
+
+// unit: texto depois de cada valor, para o número nunca aparecer sem unidade.
+function bars(rows, unit) {
   const list = element('ul');
   list.className = 'bar-list';
   const max = Math.max(0, ...rows.map(([, value]) => value));
@@ -615,7 +619,7 @@ function bars(rows) {
     bar.className = 'bar-fill';
     bar.style.width = (max ? 100 * value / max : 0) + '%';
     bar.setAttribute('aria-hidden', 'true');
-    item.append(element('span', label), element('strong', format(value)), bar);
+    item.append(element('span', label), element('strong', withUnit(value, unit)), bar);
     return item;
   }) : [element('li', 'Sem registros neste recorte.')]));
   return list;
@@ -695,8 +699,8 @@ function renderSafetyRoute() {
   cards.className = 'metrics';
   target.append(cards);
   metrics(cards, [
-    ['Acidentes', items.length], ['Mortes', items.reduce((sum, item) => sum + (item.mortos ?? 0), 0)],
-    ['Feridos', items.reduce((sum, item) => sum + (item.feridos ?? 0), 0)], ['Acidentes com morte', fatal],
+    ['Acidentes perto da rota (registros)', items.length], ['Mortes (pessoas)', items.reduce((sum, item) => sum + (item.mortos ?? 0), 0)],
+    ['Feridos (pessoas)', items.reduce((sum, item) => sum + (item.feridos ?? 0), 0)], ['Acidentes com morte (registros)', fatal],
   ]);
   const byRoad = new Map();
   for (const item of items) {
@@ -710,8 +714,8 @@ function renderSafetyRoute() {
   const grid = element('div');
   grid.className = 'insight-grid';
   grid.append(
-    block('Onde acontecem', bars(mostFrequent(items.map((item) => item.municipio + ' (' + item.uf + ')')))),
-    block('Tipos de acidente', bars(mostFrequent(items.map((item) => item.tipo_acidente)))),
+    block('Onde acontecem', bars(mostFrequent(items.map((item) => item.municipio + ' (' + item.uf + ')')), 'acidentes')),
+    block('Tipos de acidente', bars(mostFrequent(items.map((item) => item.tipo_acidente)), 'acidentes')),
   );
   const ufs = [...new Set(trajeto.entries.map(({ town }) => town.uf))];
   const roads = [...new Set(items.map((item) => 'BR-' + item.br))].slice(0, 6);
@@ -742,8 +746,8 @@ function renderRoadsRoute() {
   const cards = element('dl');
   cards.className = 'metrics';
   target.append(cards);
-  metrics(cards, [['km em rodovias federais', federal, 'OSRM/OpenStreetMap'], ['km em rodovias estaduais', state, 'OSRM/OpenStreetMap'],
-    ['Estados atravessados', ufs.length, ufs.join(', ')]]);
+  metrics(cards, [['Rodovias federais na rota (km)', federal, 'OSRM/OpenStreetMap'], ['Rodovias estaduais na rota (km)', state, 'OSRM/OpenStreetMap'],
+    ['Estados atravessados (UFs)', ufs.length, ufs.join(', ')]]);
   const table = element('div');
   const federalRoads = rows.filter((row) => row.kind === 'Federal').map((row) => row.ref).slice(0, 6);
   target.append(block('Trechos da rota', table),
@@ -778,9 +782,9 @@ function renderEconomyRoute() {
   grid.className = 'insight-grid';
   grid.append(
     block('O que move a economia do corredor', ...sectorBar(total, 2021),
-      bars([...sectors].sort((a, b) => b[1] - a[1]).slice(0, 6)), element('small', 'Pessoas ocupadas por atividade · ' + sources.activities)),
+      bars([...sectors].sort((a, b) => b[1] - a[1]).slice(0, 6), 'pessoas'), element('small', 'Pessoas ocupadas por atividade · ' + sources.activities)),
     block('Maiores economias do caminho', bars(values.filter((item) => Number.isFinite(item.value))
-      .sort((a, b) => b.value - a.value).slice(0, 6).map((item) => [label(item.ibge_code), Math.round(item.value / 1000)])),
+      .sort((a, b) => b.value - a.value).slice(0, 6).map((item) => [label(item.ibge_code), Math.round(item.value / 1000)]), 'R$ mi'),
     element('small', 'PIB em R$ milhões · ' + sources.economy)),
   );
   const regions = new Map();
@@ -802,9 +806,9 @@ function renderEconomyRoute() {
   const cards = element('dl');
   cards.className = 'metrics';
   metrics(cards, [
-    ['Em alojamento e alimentação', workers('I'), sources.activities],
-    ['Em artes, cultura, esporte e recreação', workers('R'), sources.activities],
-    ['Regiões turísticas no caminho', regions.size, sources.tourism],
+    ['Ocupadas em alojamento e alimentação (pessoas)', workers('I'), sources.activities],
+    ['Ocupadas em artes, cultura, esporte e recreação (pessoas)', workers('R'), sources.activities],
+    ['Regiões turísticas no caminho (regiões)', regions.size, sources.tourism],
   ]);
   const companies = entries.flatMap(({ town }) => industries[town.id] ?? []);
   const companyBlock = companies.length
@@ -866,7 +870,7 @@ async function loadTriage() {
       if (!comparison.open) return;
       paginatedTable(byId('triage-table'), 'Comparação de pares', [
         ['Trajeto', 'name'], ['km rodoviários', 'km'], ['Carga (t/ano)', 'tonnes'], ['Produto principal', 'product'],
-        ['Acidentes próximos', 'accidents'], ['PIB das pontas (R$ mil)', 'pib'],
+        ['Acidentes próximos (registros)', 'accidents'], ['PIB das pontas (R$ mil)', 'pib'],
       ], localPage([...comparisons.values()]));
     }
     comparison.addEventListener('toggle', showComparison);
@@ -946,8 +950,8 @@ async function loadTriage() {
         const pib = gdp.has(start) && gdp.has(end) ? gdp.get(start) + gdp.get(end) : null;
         metrics(byId('triage-metrics'), [
           ['Distância rodoviária (km)', route?.km, 'OSRM / OpenStreetMap'],
-          ['Acidentes perto da rota', safety.accidents, 'PRF ' + (accidentYear ?? '') + ' · faixa de 500 m em rodovias federais'],
-          ['Mortes nos registros próximos', safety.deaths, 'PRF ' + (accidentYear ?? '') + ' · faixa de 500 m em rodovias federais'],
+          ['Acidentes perto da rota (registros)', safety.accidents, 'PRF ' + (accidentYear ?? '') + ' · faixa de 500 m em rodovias federais'],
+          ['Mortes perto da rota (pessoas)', safety.deaths, 'PRF ' + (accidentYear ?? '') + ' · faixa de 500 m em rodovias federais'],
           ['PIB somado das pontas (R$ mil)', pib, 'IBGE · ' + economy.reference_year],
           ['Carga total do par (t/ano)', cargo.tonnes, cargoSource],
           ['Produto com maior tonelagem', cargo.product, cargo.tonnes === 0 ? 'Nenhum volume positivo no par' : cargoSource],
@@ -1114,7 +1118,7 @@ function mostFrequent(labels) {
   return [...counts].sort((a, b) => b[1] - a[1]).slice(0, 6);
 }
 
-function showBars(id, rows) {
+function showBars(id, rows, unit) {
   const max = Math.max(0, ...rows.map(([, value]) => value));
   byId(id).replaceChildren(...(rows.length ? rows.map(([label, value]) => {
     const item = element('li');
@@ -1122,7 +1126,7 @@ function showBars(id, rows) {
     bar.className = 'bar-fill';
     bar.style.width = (max ? 100 * value / max : 0) + '%';
     bar.setAttribute('aria-hidden', 'true');
-    item.append(element('span', label), element('strong', format(value)), bar);
+    item.append(element('span', label), element('strong', withUnit(value, unit)), bar);
     return item;
   }) : [element('li', 'Sem registros neste recorte.')]));
 }
@@ -1140,7 +1144,7 @@ async function loadRoads() {
     const roadName = (code) => 'BR-' + code;
     const codes = [...new Set(items.map(row => row.vl_br).filter(Boolean))].sort();
     select.replaceChildren(new Option('Todas as rodovias', ''), ...codes.map(code => new Option(roadName(code), code)));
-    showBars('roads-bars', mostFrequent(items.map(row => row.vl_br && roadName(row.vl_br))));
+    showBars('roads-bars', mostFrequent(items.map(row => row.vl_br && roadName(row.vl_br))), 'trechos');
     select.disabled = !codes.length;
     select.onchange = () => {
       const code = select.value;
@@ -1193,7 +1197,7 @@ async function loadEconomy() {
     const name = row => row.municipality.replace(/\s*(\(GO\)| - GO)$/, '');
     const valid = items.filter(row => row.unit === 'Mil Reais' && Number.isFinite(row.value));
     showBars('economy-bars', valid.toSorted((a, b) => b.value - a.value).slice(0, 6)
-      .map(row => [name(row), row.value / 1e6]));
+      .map(row => [name(row), row.value / 1e6]), 'R$ bi');
     const select = byId('economy-town');
     select.replaceChildren(new Option('Todos os municípios', ''), ...items
       .toSorted((a, b) => name(a).localeCompare(name(b), 'pt-BR'))
@@ -1283,7 +1287,7 @@ byId('rail-history').addEventListener('toggle', function () {
   if (!this.open || byId('rail-table').hasChildNodes()) return;
   paginatedTable(byId('rail-table'), 'Fluxos da ANTT', [
     ['Mês', 'Mes_Ano'], ['Ferrovia', 'Ferrovia'], ['Origem', 'Estacao_Origem'], ['UF origem', 'UF_Origem'],
-    ['Destino', 'Estacao_Destino'], ['UF destino', 'UF_Destino'], ['Mercadoria', 'Mercadoria_ANTT'], ['TU', 'TU'], ['TKU', 'TKU'],
+    ['Destino', 'Estacao_Destino'], ['UF destino', 'UF_Destino'], ['Mercadoria', 'Mercadoria_ANTT'], ['TU (toneladas úteis)', 'TU'], ['TKU (t·km úteis)', 'TKU'],
   ], apiPage('/api/rail/flows'));
 });
 
