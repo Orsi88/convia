@@ -1,0 +1,177 @@
+{
+  "versao": "2026-11-25",
+  "nota": "Conteúdo levantado com fontes abertas em 25/11/2026. Cada afirmação cita a fonte; dados de operadores e associações do setor estão marcados como parte interessada. Lacunas estão declaradas.",
+  "fontes": {
+    "W1": {"titulo": "Bericht über die Verkehrsverlagerung Juli 2023–Juni 2025", "org": "Conselho Federal Suíço", "data": "19/11/2025", "url": "https://cms.news.admin.ch/fileservice/sdweb-docs-prod-nsbcch-files/files/2025/11/19/0d80d02c-5058-4b7b-9d7e-a9cb772505f6.pdf"},
+    "W2": {"titulo": "Weniger Marktanteile für die Bahn im alpenquerenden Güterverkehr", "org": "Conselho Federal Suíço", "data": "12/03/2026", "url": "https://www.admin.ch/de/newnsb/pAzo0IO4kxRefXD7Hdnrf"},
+    "W3": {"titulo": "Schienengüterverkehr trotz positiver Wirtschaftsentwicklung unter Druck", "org": "Conselho Federal Suíço", "data": "10/09/2026", "url": "https://www.admin.ch/de/newnsb/ViWq1MYAkV3B"},
+    "W4": {"titulo": "Bundesrat setzt sich für leistungsfähige NEAT-Zulaufstrecken ein", "org": "Conselho Federal Suíço", "data": "19/11/2025", "url": "https://www.admin.ch/de/newnsb/BeYR4WQfaWWdnbkUH7i9t"},
+    "W5": {"titulo": "Betuweroute", "org": "Wikipedia (en)", "data": "acesso em 25/11/2026", "url": "https://en.wikipedia.org/wiki/Betuweroute"},
+    "W6": {"titulo": "About the Shinkansen", "org": "Central Japan Railway (JR Central), operadora", "data": "sem data (dados de 2023)", "url": "https://global.jr-central.co.jp/en/company/about_shinkansen"},
+    "W7": {"titulo": "Railway Bureau", "org": "Ministério de Terras, Infraestrutura, Transportes e Turismo do Japão (MLIT)", "data": "sem data", "url": "https://www.mlit.go.jp/en/tetudo/tetudo_fr2_000000.html"},
+    "W8": {"titulo": "Safety and Convenience: How the Shinkansen Changed Japan", "org": "Nippon.com, Umehara Jun", "data": "25/10/2024", "url": "https://nippon.com/en/in-depth/d01045"},
+    "W9": {"titulo": "Entre violações e mortes, maior trem do mundo circula do Pará ao Maranhão", "org": "Brasil de Fato, Idayane Ferreira", "data": "01/02/2020", "url": "https://www.brasildefato.com.br/2020/02/01/entre-violacoes-e-mortes-maior-trem-do-mundo-circula-do-para-ao-maranhao/"},
+    "W10": {"titulo": "Processados pela Vale", "org": "Agência Pública, Thiago Domenici", "data": "23/11/2017", "url": "https://apublica.org/2017/11/processados-pela-vale/"},
+    "W11": {"titulo": "Carajás Railway", "org": "Wikipedia (en), citando página da Vale", "data": "acesso em 25/11/2026", "url": "https://en.wikipedia.org/wiki/Caraj%C3%A1s_Railroad"},
+    "W12": {"titulo": "Rumo coloca R$ 15 bi nos trilhos para carregar os grãos do MT", "org": "AgFeed, Alessandra Mello (entrevista com a Rumo)", "data": "17/10/2024", "url": "https://agfeed.com.br/negocios/rumo-coloca-r-15-bi-nos-trilhos-para-carregar-os-graos-do-mt-e-depois-ir-alem"},
+    "W13": {"titulo": "De Sinop para baixo, a Rumo é mais competitiva que o Arco Norte", "org": "AgriBiz, Karina Souza (entrevista com a Rumo)", "data": "19/06/2024", "url": "https://www.theagribiz.com/agronegocio/de-sinop-para-baixo-a-rumo-e-mais-competitiva-que-o-arco-norte"},
+    "W14": {"titulo": "Terminal de Rondonópolis tem capacidade para receber até 2 mil caminhões por dia", "org": "Notícias Agrícolas (comunicado da Rumo)", "data": "28/04/2021", "url": "https://www.noticiasagricolas.com.br/noticia/286494"},
+    "W15": {"titulo": "Kenya's Standard Gauge Railway: The Promise and Risks of Rail Megaprojects", "org": "Wilson Center, Ian Gorecki", "data": "24/09/2020", "url": "https://www.wilsoncenter.org/blog-post/kenyas-standard-gauge-railway-the-promise-and-risks-of-rail-megaprojects"},
+    "W16": {"titulo": "Cargo, passenger surge lifts SGR revenue to Sh21bn in 2025", "org": "Business Daily (Nation Media Group), Kabui Mwangi", "data": "11/02/2026", "url": "https://www.businessdailyafrica.com/bd/corporate/shipping-logistics/cargo-passenger-surge-lifts-sgr-revenue-to-sh21bn-in-2025-5355734"}
+  },
+  "ferrovias": [
+    {
+      "id": "gotthard",
+      "wikipedia": "https://en.wikipedia.org/wiki/Gotthard_Base_Tunnel",
+      "nome": "Corredor do Gotthard e política de transferência modal",
+      "pais": "Suíça",
+      "tipo": "Carga e passageiros, travessia dos Alpes",
+      "resumo": "A Suíça fixou em lei uma meta de caminhões atravessando os Alpes e investiu em túneis de base (Gotthard, Lötschberg e Ceneri) para levar a carga ao trem.",
+      "numeros": [
+        {"rotulo": "Viagens de caminhão pelos Alpes em 2024", "valor": "960 mil", "fonte": "W1", "local": "p. 8"},
+        {"rotulo": "Meta legal (prazo: 2018)", "valor": "650 mil", "fonte": "W1", "local": "p. 8"},
+        {"rotulo": "Queda desde 2000", "valor": "−31,6%", "fonte": "W1", "local": "p. 5 e 8"},
+        {"rotulo": "Participação do trem na carga transalpina em 2024", "valor": "70,3%", "fonte": "W1", "local": "p. 16"}
+      ],
+      "efeitos": {
+        "economia": [{"texto": "A participação do trem caiu de 72,9% (2022) para 70,3% (2024) e 68,6% (2025), por obras e por um ambiente econômico difícil.", "fontes": ["W1", "W2"], "confianca": "estabelecida"}],
+        "seguranca": [{"texto": "Em 10/08/2023 um trem de carga descarrilou no túnel de base do Gotthard; as duas galerias ficaram fechadas até 23/08/2023 e o tráfego foi desviado.", "fontes": ["W1"], "confianca": "estabelecida"}],
+        "ambiente": [
+          {"texto": "A poluição do ar nos Alpes segue caindo, mas o relatório atribui a queda aos caminhões menos poluentes, não à ferrovia; os caminhões ainda pesam nos óxidos de nitrogênio e na fuligem.", "fontes": ["W1"], "confianca": "estabelecida"},
+          {"texto": "O ruído do trem de carga caiu com as obras de redução de ruído; o dos caminhões, sobretudo das 5h às 6h, segue alto.", "fontes": ["W1"], "confianca": "estabelecida"}
+        ],
+        "turismo": []
+      },
+      "atencao": [
+        "Mesmo com os túneis prontos, a meta de 650 mil viagens nunca foi alcançada.",
+        "O governo aponta os acessos ao norte (principalmente na Alemanha) como gargalo, não os túneis (W4).",
+        "No 1º semestre de 2026 as viagens de caminhão subiram 7%, para 511 mil, e o governo espera passar de 1 milhão no ano (W3)."
+      ],
+      "lacunas": ["Efeitos sobre turismo não foram encontrados nas fontes oficiais lidas."]
+    },
+    {
+      "id": "betuwe",
+      "wikipedia": "https://en.wikipedia.org/wiki/Betuweroute",
+      "nome": "Betuweroute",
+      "pais": "Países Baixos",
+      "tipo": "Carga exclusiva, porto de Roterdã → Alemanha",
+      "resumo": "Linha só de carga, de cerca de 160 km, ligando o porto de Roterdã à fronteira alemã, inaugurada em 16/06/2007.",
+      "numeros": [
+        {"rotulo": "Custo final", "valor": "€ 4,7 bi (orçamento: € 2,3 bi; estimativa de 1990: € 1,1 bi)", "fonte": "W5", "local": "seção History"},
+        {"rotulo": "Carga em 2019", "valor": "4,2 bi t·km", "fonte": "W5", "local": "seção Use"},
+        {"rotulo": "Trens de carga Roterdã–Alemanha pela linha (meados de 2011)", "valor": "78%", "fonte": "W5", "local": "seção Use"}
+      ],
+      "efeitos": {
+        "economia": [{"texto": "Concentrou a maior parte dos trens de carga entre Roterdã e a Alemanha poucos anos após a abertura.", "fontes": ["W5"], "confianca": "fraca"}],
+        "seguranca": [],
+        "ambiente": [{"texto": "Tem 160 km de barreiras acústicas, a mesma extensão da linha — uma medida de mitigação, não um benefício medido.", "fontes": ["W5"], "confianca": "fraca"}],
+        "turismo": []
+      },
+      "atencao": [
+        "Custo final mais que o dobro do orçamento (W5).",
+        "O ministério recebeu 14 mil reclamações só contra o ramal norte (W5).",
+        "No primeiro semestre de operação o tráfego foi baixo, por falta da ligação alemã e de equipamentos de segurança (W5)."
+      ],
+      "lacunas": ["Não foi encontrada avaliação oficial de caminhões evitados, emissões ou acidentes. A fonte lida é secundária (Wikipedia)."]
+    },
+    {
+      "id": "shinkansen",
+      "wikipedia": "https://en.wikipedia.org/wiki/Tokaido_Shinkansen",
+      "nome": "Shinkansen (Tokaido)",
+      "pais": "Japão",
+      "tipo": "Passageiros, alta velocidade",
+      "resumo": "Primeira linha de trem de alta velocidade do mundo, inaugurada em 1964 entre Tóquio e Osaka.",
+      "numeros": [
+        {"rotulo": "Passageiros transportados no Tokaido", "valor": "≈ 7 bilhões", "fonte": "W6", "local": "seção Safety"},
+        {"rotulo": "Tóquio–Osaka", "valor": "de ≥ 6h30 para 3h10 (1965)", "fonte": "W8", "local": "texto"}
+      ],
+      "efeitos": {
+        "economia": [{"texto": "Mais viagens e encontros entre as regiões; na Expo de 1970 o pico foi de cerca de 370 mil passageiros por dia rumo à exposição.", "fontes": ["W8"], "confianca": "apoiada"}],
+        "seguranca": [{"texto": "Nenhuma morte de passageiro por acidente de trem desde 1964, segundo o governo; a operadora diz também nenhum ferido a bordo no Tokaido.", "fontes": ["W7", "W6"], "confianca": "estabelecida"}],
+        "ambiente": [{"texto": "Por assento, entre Tóquio e Osaka, usa cerca de 1/8 da energia e emite cerca de 1/12 do CO₂ de um avião, segundo a operadora.", "fontes": ["W6"], "confianca": "apoiada"}],
+        "turismo": [{"texto": "A conveniência teve grande impacto nas viagens domésticas dos japoneses (relato do autor, sem números de turismo).", "fontes": ["W8"], "confianca": "fraca"}]
+      },
+      "atencao": ["É uma linha de passageiros: serve de referência para segurança e turismo, não para carga.", "Números de operação vêm da própria operadora."],
+      "lacunas": ["Não foi encontrada medição de efeito econômico regional ou turístico nas fontes lidas."]
+    },
+    {
+      "id": "carajas",
+      "wikipedia": "https://pt.wikipedia.org/wiki/Estrada_de_Ferro_Caraj%C3%A1s",
+      "nome": "Estrada de Ferro Carajás",
+      "pais": "Brasil (PA e MA)",
+      "tipo": "Minério de ferro e trem de passageiros",
+      "resumo": "Liga a mina de Carajás (PA) aos portos de São Luís (MA), atravessando 27 municípios e mais de 100 comunidades.",
+      "numeros": [
+        {"rotulo": "Extensão", "valor": "≈ 890 a 970 km (as fontes divergem)", "fonte": "W11", "local": "infobox; W9 e W10 trazem 900 e 972 km"},
+        {"rotulo": "Carga e passageiros por ano", "valor": "> 120 mi t e 350 mil passageiros (dado da Vale, sem ano)", "fonte": "W11", "local": "introdução"},
+        {"rotulo": "Acidentes registrados pela ANTT (nov/2004–mai/2016)", "valor": "124, com 26 mortes e 70 feridos", "fonte": "W9", "local": "3º parágrafo"}
+      ],
+      "efeitos": {
+        "economia": [{"texto": "Escoa o minério de Carajás para exportação pelos portos do Maranhão.", "fontes": ["W11"], "confianca": "apoiada"}],
+        "seguranca": [
+          {"texto": "A maioria dos 124 acidentes foram atropelamentos (73); 45 ocorreram em passagens de nível.", "fontes": ["W9"], "confianca": "apoiada"},
+          {"texto": "Reportagem contou 39 mortes por atropelamento ao longo da linha de 2010 a 2017.", "fontes": ["W10"], "confianca": "fraca"}
+        ],
+        "ambiente": [{"texto": "Moradores relatam poeira, ruído, trepidação e rachaduras; a Defesa Civil apontou 200 famílias em área de risco em Marabá.", "fontes": ["W9", "W10"], "confianca": "apoiada"}],
+        "turismo": [{"texto": "O trem de passageiros atende as cidades ao longo da linha (cerca de 350 mil passageiros por ano, segundo a Vale).", "fontes": ["W11"], "confianca": "fraca"}]
+      },
+      "atencao": ["Mais de 170 pessoas foram processadas pela Vale em conflitos ligados à ferrovia (W10).", "A ferrovia transfere parte do risco para comunidades e passagens de nível."],
+      "lacunas": ["Dados oficiais recentes de volume e de acidentes (ANTT) não foram abertos nesta pesquisa."]
+    },
+    {
+      "id": "rumo-norte",
+      "wikipedia": "https://pt.wikipedia.org/wiki/Ferrovia_Norte_Brasil",
+      "nome": "Rumo Malha Norte",
+      "pais": "Brasil (MT, MS e SP)",
+      "tipo": "Grãos e farelo para exportação por Santos",
+      "resumo": "Leva grãos do Mato Grosso a partir do terminal de Rondonópolis até Santos; está sendo estendida para o norte do estado.",
+      "numeros": [
+        {"rotulo": "Soja, milho e farelo de MT e GO na Rumo (2023)", "valor": "32 mi t", "fonte": "W12", "local": "introdução"},
+        {"rotulo": "Caminhões por dia no terminal de Rondonópolis", "valor": "média de 1.600 (capacidade 2.000)", "fonte": "W14", "local": "texto, 2021"},
+        {"rotulo": "Trecho de caminhão até Rondonópolis", "valor": "≈ 600 km, que cairiam para ≈ 100 km com a extensão", "fonte": "W13", "local": "seção A ferrovia em Mato Grosso"}
+      ],
+      "efeitos": {
+        "economia": [{"texto": "A empresa estima benefício médio de US$ 5,50 por tonelada para os produtores com a extensão.", "fontes": ["W13"], "confianca": "fraca"}],
+        "seguranca": [],
+        "ambiente": [{"texto": "A empresa cita redução de emissões, sem números.", "fontes": ["W12"], "confianca": "fraca"}],
+        "turismo": []
+      },
+      "atencao": ["Números de volume, frete e benefício vêm da própria Rumo.", "As fontes divergem na participação de mercado no MT (cerca de 40% contra 45% na soja)."],
+      "lacunas": ["Não foi encontrada avaliação independente de frete, acidentes ou emissões."]
+    },
+    {
+      "id": "sgr-quenia",
+      "wikipedia": "https://en.wikipedia.org/wiki/Mombasa%E2%80%93Nairobi_Standard_Gauge_Railway",
+      "nome": "SGR Mombaça–Nairóbi",
+      "pais": "Quênia",
+      "tipo": "Carga e passageiros (Madaraka Express)",
+      "resumo": "Ferrovia de bitola padrão de cerca de 480 km entre o porto de Mombaça e Nairóbi, primeiro trecho concluído em 2017.",
+      "numeros": [
+        {"rotulo": "Custo do primeiro trecho", "valor": "≈ US$ 3,8 bi (+ US$ 1,5 bi até Naivasha)", "fonte": "W15", "local": "4º parágrafo"},
+        {"rotulo": "Passageiros em 2025", "valor": "2,7 milhões (+11,6%)", "fonte": "W16", "local": "3º parágrafo"},
+        {"rotulo": "Carga em 2025", "valor": "7,5 mi t (+14,6%)", "fonte": "W16", "local": "texto"}
+      ],
+      "efeitos": {
+        "economia": [
+          {"texto": "Ajudou a descongestionar o porto e a acelerar o transporte de carga (afirmação, sem dados).", "fontes": ["W15"], "confianca": "fraca"},
+          {"texto": "O frete pelo trem sai mais caro que o caminhão, principalmente pelos custos de levar a carga até o trem e do trem ao destino.", "fontes": ["W15"], "confianca": "apoiada"}
+        ],
+        "seguranca": [],
+        "ambiente": [],
+        "turismo": [{"texto": "O serviço de passageiros cresce: 2,4 milhões em 2024 e 2,7 milhões em 2025.", "fontes": ["W16"], "confianca": "apoiada"}]
+      },
+      "atencao": [
+        "Não gera caixa suficiente para cobrir operação e dívida; depende do Tesouro (W15, W16).",
+        "Contrato sem licitação e desapropriações controversas (W15).",
+        "Trens voltam vazios para Mombaça (W15)."
+      ],
+      "lacunas": ["Estudos de turismo e de bem-estar das famílias não puderam ser abertos (páginas fora do ar)."]
+    }
+  ],
+  "licoes": [
+    {"texto": "Transferir carga para o trem exige mais que a linha: acessos e terminais definem o resultado (gargalos de acesso na Suíça, custo do primeiro e último trecho no Quênia).", "fontes": ["W4", "W15"]},
+    {"texto": "Ferrovias de carga também têm risco: atropelamentos e passagens de nível concentram os acidentes em Carajás.", "fontes": ["W9"]},
+    {"texto": "Custos e prazos tendem a estourar: a Betuweroute custou o dobro do orçado.", "fontes": ["W5"]},
+    {"texto": "Efeitos sobre turismo aparecem quando há serviço de passageiros (Shinkansen, Carajás, Madaraka Express); numa ferrovia só de carga, como a simulada no CONVIA, o efeito sobre turismo seria indireto.", "fontes": ["W8", "W11", "W16"]}
+  ]
+}

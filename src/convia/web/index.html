@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CONVIA | Goiás → Brasil</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="anonymous">
+  <link rel="stylesheet" href="/assets/dashboard.css?v=corredor-2">
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="anonymous" defer></script>
+  <script src="/assets/dashboard.js?v=corredor-2" type="module"></script>
+</head>
+<body>
+  <header class="masthead">
+    <div class="wrap masthead-content">
+      <div class="brand"><img src="/assets/mascote.png" alt="" width="42" height="39"><h1>CONVIA</h1></div>
+      <nav aria-label="Áreas do painel">
+        <a href="#ferrovias" aria-current="page">Explorar trajetos</a>
+        <a href="#seguranca">Segurança</a>
+        <a href="#rodovias">Rodovias</a>
+        <a href="#economia">Economia</a>
+        <a href="#mundo">Ferrovias do mundo</a>
+        <a href="#fontes">Fontes</a>
+      </nav>
+    </div>
+  </header>
+  <main class="wrap">
+    <aside class="project-notice" aria-label="Limites do projeto">
+      <strong>Projeto acadêmico de extensão · Goiás</strong>
+      <span>As simulações usam dados públicos e hipóteses. Servem para explorar cenários e exigem estudos adicionais para avaliar a viabilidade de uma ferrovia ou prever seus efeitos.</span>
+    </aside>
+    <section class="panel" id="ferrovias" aria-labelledby="rail-heading">
+      <div class="route-toolbar">
+        <div class="route-title"><h2 id="rail-heading">Explorar trajetos a partir de Goiás</h2><p id="triage-sources">Acidentes da PRF e PIB municipal do IBGE</p></div>
+      <div class="route-picker" role="group" aria-label="Municípios do trajeto">
+        <label class="route-start" for="triage-start">Ponto de partida <select id="triage-start" disabled></select></label>
+        <label class="route-end" for="triage-end">Ponto de destino <select id="triage-end" disabled></select></label>
+        <button type="button" id="triage-search" disabled>Analisar trajeto</button>
+      </div>
+      </div>
+      <p id="triage-status" class="status" role="status"></p>
+      <div id="triage-content" hidden>
+        <div class="triage-workspace">
+          <div class="triage-map-pane">
+            <figure id="triage-map-figure">
+              <div class="map" id="triage-map" role="region" aria-label="Mapa do trajeto selecionado" aria-describedby="triage-map-caption"></div>
+              <figcaption>
+                <div class="map-actions">
+                  <span id="triage-map-caption"></span>
+                  <button type="button" id="triage-map-reset" aria-label="Enquadrar rota" title="Enquadrar rota">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 4H4v5m11-5h5v5M4 15v5h5m11-5v5h-5"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+                <p class="map-hint">Arraste para mover. Use a roda, a pinça ou os botões + e − para dar zoom.</p>
+              </figcaption>
+            </figure>
+            <p id="triage-map-status" class="status" role="status"></p>
+          </div>
+          <section class="triage-readout" aria-labelledby="triage-readout-heading">
+            <h3 id="triage-readout-heading">Dados de referência</h3>
+            <p class="readout-note">Distância da rota, segurança nas proximidades, atividade econômica e carga entre as duas cidades.</p>
+            <dl class="metrics" id="triage-metrics" aria-live="polite"></dl>
+          </section>
+        </div>
+        <div class="triage-details">
+        <section class="impact" aria-labelledby="impact-heading">
+          <h3 id="impact-heading">E se parte da carga fosse para o trem?</h3>
+          <p class="panel-note">Cada cenário supõe que 10%, 20% ou 30% da carga total do par sai da rodovia e passa para o trem. Esses percentuais são hipóteses para comparar cenários. A parcela rodoviária e a viabilidade da operação ainda precisam ser confirmadas.</p>
+          <div class="impact-controls">
+            <label class="section-filter">Carga útil por caminhão
+              <select id="impact-q"><option value="30">30 t</option><option value="37" selected>37 t</option><option value="45">45 t</option></select>
+            </label>
+            <label class="section-filter">Acesso aos terminais
+              <select id="impact-terminais"><option value="A">Terminal nas duas cidades</option><option value="B">Caminhão até o terminal nas duas pontas</option></select>
+            </label>
+          </div>
+          <p id="impact-status" class="coverage" role="status"></p>
+          <p id="impact-headline" class="impact-headline" aria-live="polite"></p>
+          <div class="table-scroll" id="impact-results" role="region" aria-label="Resultados dos cenários" tabindex="0">
+            <table>
+              <thead><tr><th scope="col">Indicador (por ano)</th><th scope="col">10%</th><th scope="col">20%</th><th scope="col">30%</th></tr></thead>
+              <tbody id="impact-rows"></tbody>
+            </table>
+          </div>
+          <p id="impact-notes" class="panel-note"></p>
+          <details class="impact-method">
+            <summary>Fontes e c&aacute;lculo dos cen&aacute;rios</summary>
+            <dl class="formula-grid">
+              <div><dt>Carga no trem</dt><dd>Carga total do par &times; percentual do cenário. A <a href="https://pit.infrasa.gov.br/dados-abertos/">matriz PNL 2050, base 2023</a> soma todos os modos: parte da carga pode já ir de trem.</dd></div>
+              <div><dt>Viagens de caminhão evitadas</dt><dd>Carga no trem &divide; carga útil por caminhão. A carga útil é premissa: a Resolução CONTRAN 882/2021 só fixa o peso bruto (57 t, ou 74 t com AET).</dd></div>
+              <div><dt>Acidentes, mortes e custo evitados</dt><dd>Para cada acidente da PRF a até 500 m da rota: fração com caminhão (30% dos acidentes, 43% das mortes, <a href="https://www.icict.fiocruz.br/sites/www.icict.fiocruz.br/files/IPEA%202015_relatorio_acidentes_transito.pdf">Ipea/PRF</a>) &times; exposição evitada. A exposição é passagens retiradas por dia (ida e volta vazia) &divide; veículos comerciais por dia naquela BR e UF (VMDa 2022 do DNIT, classes A a H). O custo usa os valores do Ipea por gravidade, corrigidos pelo IPCA de dez/2014 a ago/2026. A PRF só cobre rodovias federais: em trechos estaduais o resultado é um piso.</dd></div>
+              <div><dt>Economia de frete</dt><dd>(Frete rodoviário &minus; custo pelo trem) &times; carga no trem. Rodoviário: reta sobre os fretes de 15 rotas de grãos da <a href="https://www.gov.br/conab/pt-br/atuacao/logistica/boletim-logistico">Conab em Goiás</a>, ago/2026, com faixa dada pelo maior desvio para baixo (&minus;R$ 30,8/t) e para cima (+R$ 55,4/t) entre essas rotas. Trem: tarifa média da <a href="https://www.gov.br/antt/pt-br/assuntos/ferrovias/relatorio-de-tarifas-e-precos/relatorio-de-tarifas-e-precos">ANTT 2024</a> do setor agrícola na faixa de distância, corrigida pelo IGP-DI, mais o transbordo do PNL nas duas pontas. Sem terminal, soma R$ 39/t por ponta de caminhão. A distância pelo trem é suposta igual à da estrada.</dd></div>
+              <div><dt>Caminhões a menos por dia</dt><dd>Viagens evitadas &times; 2 (a volta vazia) &divide; 365. É o número usado na exposição a acidentes.</dd></div><div><dt>Economia por tonelada</dt><dd>Frete rodoviário &minus; custo pelo trem, já com o transbordo. Não depende do percentual do cenário.</dd></div>
+              <div><dt>CO₂ e diesel evitados</dt><dd>Carga no trem &times; distância &times; (fator rodoviário &minus; fator ferroviário). Granel agrícola: 37,3 e 16,6 kg CO₂ por mil t·km; 15,7 e 7,0 L por mil t·km (BNDES, com base em EPL e IEMA).</dd></div>
+            </dl>
+          </details>
+        </section>
+        <aside class="triage-reference" aria-labelledby="triage-reference-heading">
+        <h3 id="triage-reference-heading">Referências do trajeto</h3>
+        <dl class="reference-list">
+          <div><dt>⌖ Rota rodoviária</dt><dd>Liga as sedes municipais e serve de referência para estudar alternativas ferroviárias. <a href="https://routing.openstreetmap.de/about.html">OSRM/FOSSGIS</a> · <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> · <a href="https://www.ibge.gov.br/geociencias/organizacao-do-territorio/estrutura-territorial/27385-localidades.html">IBGE</a></dd></div>
+          <div><dt>△ Segurança viária</dt><dd>Registros da PRF nas rodovias federais, numa faixa aproximada de 500 m ao redor da rota. Podem incluir ocorrências em vias próximas.</dd></div>
+          <div><dt>▥ Economia e carga</dt><dd>O PIB soma a atividade econômica dos dois municípios. A carga reúne todos os modos de transporte e considera o sentido da viagem.</dd></div>
+        </dl>
+        <a class="map-source-link" href="https://www.openstreetmap.org/fixthemap">Sugerir correção no mapa</a>
+        </aside>
+        </div>
+        <section class="corridor" id="corridor" aria-labelledby="corridor-heading">
+          <div class="corridor-head">
+            <h3 id="corridor-heading">Entorno do trajeto</h3>
+            <p class="panel-note" id="corridor-note">Municípios com sede a até 25 km da rota, na ordem em que aparecem no caminho. Escolha um para ver economia, empregos, turismo e um resumo da cidade.</p>
+          </div>
+          <p id="corridor-status" class="status" role="status"></p>
+          <dl class="metrics corridor-metrics" id="corridor-metrics" aria-live="polite"></dl>
+          <div class="corridor-grid">
+            <div class="table-scroll corridor-list" role="region" aria-label="Municípios do entorno" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">km</th><th scope="col">Município</th><th scope="col">Setor que mais pesa</th><th scope="col">Turismo</th></tr></thead>
+                <tbody id="corridor-rows"></tbody>
+              </table>
+            </div>
+            <article class="town-card" id="town-card" aria-live="polite"></article>
+          </div>
+          <p class="panel-note" id="corridor-sources"></p>
+        </section>
+        <section class="impact" id="norte-sul" aria-labelledby="norte-sul-heading">
+          <h3 id="norte-sul-heading">Corredor da Norte-Sul: toda a carga de Goiás que ele poderia captar</h3>
+          <p class="panel-note">Soma todos os pares da matriz do PNL (base 2023) com origem a até 100 km dos terminais de Anápolis, Rio Verde e São Simão e chegada a até 100 km de Estrela d'Oeste, Santos, Porto Nacional ou São Luís, mais as exportações que saem pelos portos de Santos e do Itaqui. Cada grupo usa a distância rodoviária entre o terminal e o ponto de chegada e paga caminhão até o terminal nas duas pontas (na exportação, só na origem: o trem chega ao porto). Acidentes ficam fora: dependem da rota de cada par.</p>
+          <p id="norte-sul-status" class="status" role="status"></p>
+          <p id="norte-sul-headline" class="impact-headline" aria-live="polite"></p>
+          <div class="table-scroll" role="region" aria-label="Cenários do corredor" tabindex="0">
+            <table>
+              <thead><tr><th scope="col">Indicador (por ano)</th><th scope="col">10%</th><th scope="col">20%</th><th scope="col">30%</th></tr></thead>
+              <tbody id="norte-sul-rows"></tbody>
+            </table>
+          </div>
+          <p id="norte-sul-notes" class="panel-note"></p>
+          <details class="impact-method">
+            <summary>Carga por terminal e ponto de chegada</summary>
+            <div class="table-scroll" role="region" aria-label="Grupos do corredor" tabindex="0">
+              <table>
+                <thead><tr><th scope="col">Terminal → chegada</th><th scope="col">Tipo</th><th scope="col">Carga (t/ano)</th><th scope="col">km</th><th scope="col">Economia por t</th><th scope="col">Principais produtos</th></tr></thead>
+                <tbody id="norte-sul-groups"></tbody>
+              </table>
+            </div>
+          </details>
+        </section>
+        <details id="triage-comparison" class="triage-comparison">
+          <summary>Comparar pares sugeridos (300 km ou mais) e rotas consultadas</summary>
+          <div id="triage-table"></div>
+        </details>
+      </div>
+      <details id="rail-history">
+        <summary>Consultar fluxos ferroviários existentes</summary>
+        <p class="panel-note" id="rail-source">Fonte ANTT</p>
+        <p class="panel-note">Fluxos com origem ou destino em Goiás. TU e TKU são exibidos como na fonte.</p>
+        <div id="rail-table"></div>
+      </details>
+    </section>
+    <section class="panel" id="seguranca" aria-labelledby="safety-heading" hidden>
+      <div class="panel-header">
+        <div><h2 id="safety-heading">Acidentes nas rodovias federais</h2><p id="safety-source">Fonte PRF</p></div>
+        <label for="road-filter">Rodovia federal
+          <select id="road-filter" disabled><option value="">Todas as BRs</option></select>
+        </label>
+      </div>
+      <section class="route-context" id="safety-route" aria-live="polite"><p class="panel-note">Escolha um trajeto em "Explorar trajetos" para ver a segurança ao longo do caminho.</p></section>
+      <h3 class="overview-heading">Goiás · visão geral</h3>
+      <p id="safety-status" class="status" role="status"></p>
+      <div id="safety-content" hidden>
+        <dl class="metrics safety-metrics" id="safety-metrics"></dl>
+        <figure id="map-figure">
+          <div class="map" id="accident-map" role="region" aria-label="Mapa interativo dos acidentes" aria-describedby="map-caption"></div>
+          <figcaption id="map-caption"></figcaption>
+        </figure>
+        <p id="map-status" class="status" role="status"></p>
+        <details>
+          <summary>Acidentes por tipo no mapa</summary>
+          <ul class="bar-list" id="safety-bars"></ul>
+        </details>
+        <details>
+          <summary>Consultar registros de acidentes em tabela</summary>
+          <div id="accident-table"></div>
+        </details>
+      </div>
+      <aside class="context-panel">
+        <h3>Notícias e prevenção</h3>
+        <div class="editorial-grid">
+          <article class="editorial-card"><img class="editorial-image" src="/assets/prf-prevencao.jpg" alt="" loading="lazy" decoding="async"><small>PRF Goiás · Abril de 2026</small><h4>Como prevenir colisões traseiras</h4><p>A PRF orienta motoristas sobre distância de segurança e reforça os cuidados nas rodovias durante o feriado do Dia do Trabalho.</p><a href="https://www.gov.br/prf/pt-br/noticias/estaduais/goias/2026/abril/prf-orienta-motoristas-para-prevenir-colisoes-traseiras-no-feriado-do-dia-do-trabalho">Ler orientação da PRF</a></article>
+          <article class="editorial-card"><img class="editorial-image" src="/assets/prf-carnaval.jpg" alt="" loading="lazy" decoding="async"><small>PRF Goiás · Fevereiro de 2026</small><h4>Balanço das rodovias goianas no Carnaval</h4><p>A operação registrou 44 acidentes e cinco mortes nas rodovias federais de Goiás durante o período analisado.</p><a href="https://www.gov.br/prf/pt-br/noticias/estaduais/goias/2026/fevereiro/carnaval-2026-registra-44-acidentes-e-5-mortes-nas-rodovias-federais-goianas">Ler balanço da operação</a></article>
+        </div>
+        <p>Abra um ponto no mapa para buscar notícias pela BR e pelo município. Os resultados podem tratar de outros casos da região.</p>
+        <a href="https://www.gov.br/prf/pt-br/noticias/estaduais/goias">Notícias da PRF em Goiás</a>
+      </aside>
+    </section>
+    <section class="panel" id="rodovias" aria-labelledby="roads-heading" hidden>
+      <div class="panel-header"><div><h2 id="roads-heading">Trechos rodoviários</h2><p id="roads-source">Fonte DNIT</p></div></div>
+      <section class="route-context" id="roads-route" aria-live="polite"><p class="panel-note">Escolha um trajeto em "Explorar trajetos" para ver as rodovias do caminho.</p></section>
+      <h3 class="overview-heading">Goiás · visão geral</h3>
+      <p id="roads-status" class="status" role="status"></p>
+      <div class="insight-grid">
+        <section class="context-panel">
+          <h3>Rodovias com mais trechos na base</h3>
+          <ul class="bar-list" id="roads-bars"></ul>
+          <p>Contagem de registros cadastrados. A extensão e o fluxo de veículos variam por trecho.</p>
+        </section>
+        <aside class="context-panel">
+          <h3>Tráfego, obras e notícias</h3>
+          <ul>
+            <li><a href="https://dnit-portalmultas.labtrans.ufsc.br/informacoes/dados-trafego">Consultar volume de tráfego por posto</a></li>
+            <li><a href="https://mapadeobras.seinfra.go.gov.br/painel-de-obras">Ver o mapa de obras de Goiás</a></li>
+            <li><a href="https://goias.gov.br/goinfra/">Acompanhar comunicados da Goinfra</a></li>
+          </ul>
+        </aside>
+      </div>
+      <label class="section-filter">Filtrar trechos por rodovia <select id="roads-filter" disabled><option value="">Todas as rodovias</option></select></label>
+      <p><a id="roads-news" href="https://www.gov.br/dnit/pt-br/assuntos/noticias">Notícias do DNIT</a></p>
+      <div id="roads-table"></div>
+    </section>
+    <section class="panel" id="economia" aria-labelledby="economy-heading" hidden>
+      <div class="panel-header"><div><h2 id="economy-heading">PIB municipal</h2><p id="economy-source">Fonte IBGE</p></div></div>
+      <section class="route-context" id="economy-route" aria-live="polite"><p class="panel-note">Escolha um trajeto em "Explorar trajetos" para ver a economia, o turismo e a cultura ao longo do caminho.</p></section>
+      <h3 class="overview-heading">Goiás · visão geral</h3>
+      <p id="economy-status" class="status" role="status"></p>
+      <div class="regional-layout">
+        <section class="context-panel">
+          <h3>Empresas e polos produtivos</h3>
+          <div class="map" id="economy-map" aria-label="Mapa de empresas por município" role="region"></div>
+          <p>Os pontos indicam a sede do município. A seleção destaca exemplos documentados de atividade industrial.</p>
+        </section>
+        <aside class="context-panel">
+          <h3>Atividade no município</h3>
+          <label>Município <select id="economy-town" disabled><option value="">Todos os municípios</option></select></label>
+          <dl class="metrics" id="economy-local"></dl>
+          <ul class="company-list" id="economy-companies"></ul>
+        </aside>
+      </div>
+      <div class="insight-grid">
+        <section class="context-panel">
+          <h3>Maiores PIBs municipais</h3>
+          <ul class="bar-list" id="economy-bars"></ul>
+          <p>PIB total em R$ bilhões. O gráfico compara o tamanho das economias municipais.</p>
+        </section>
+        <aside class="context-panel">
+          <h3>Perfil econômico local</h3>
+          <ul>
+            <li><a id="economy-news" href="https://goias.gov.br/industriaecomercio/">Notícias de indústria e comércio em Goiás</a></li>
+            <li><a href="https://goias.gov.br/imb/wp-content/uploads/sites/29/2026/11/Estudo_11_2026_Perfil_Economico_dos_Municipios_Goianos.pdf">Perfis municipais, setores e emprego · IMB</a></li>
+          </ul>
+        </aside>
+      </div>
+      <section class="context-panel">
+        <h3>Economia regional em notícias e estudos</h3>
+        <div class="editorial-grid">
+          <article class="editorial-card" data-town=""><img class="editorial-image editorial-cover" src="/assets/capa-perfil-economico-imb.png" alt="Capa do estudo do Instituto Mauro Borges" loading="lazy" decoding="async"><small>Instituto Mauro Borges · Estudo de 2026 · Goiás</small><h4>O que move a economia dos 246 municípios</h4><p>O estudo cruza PIB, emprego formal e dados agropecuários para explicar como o peso dos setores produtivos varia entre os municípios.</p><a href="https://goias.gov.br/imb/wp-content/uploads/sites/29/2026/11/Estudo_11_2026_Perfil_Economico_dos_Municipios_Goianos.pdf">Abrir estudo do IMB</a></article>
+        </div>
+      </section>
+      <details><summary>Consultar PIB dos municípios em tabela</summary><div id="economy-table"></div></details>
+    </section>
+    <section class="panel" id="mundo" aria-labelledby="world-heading" hidden>
+      <div class="panel-header"><div><h2 id="world-heading">Ferrovias do mundo</h2><p>Casos de referência e o que se mediu sobre economia, segurança, ambiente e turismo</p></div></div>
+      <p id="world-status" class="status" role="status"></p>
+      <div id="world-content" class="world-content"></div>
+    </section>
+    <section class="panel" id="fontes" aria-labelledby="sources-heading" hidden>
+      <div class="panel-header"><div><h2 id="sources-heading">Fontes e cobertura</h2><p id="version"></p></div></div>
+      <dl class="metrics" id="overview" aria-label="Cobertura das bases"></dl>
+      <p id="coverage" class="coverage" role="status">Carregando cobertura das bases…</p>
+      <p id="sources-status" class="status" role="status"></p>
+      <ul id="quality-notes"></ul>
+      <ul id="source-links"></ul>
+    </section>
+  </main>
+</body>
+</html>
